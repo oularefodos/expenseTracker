@@ -1,3 +1,4 @@
+import { string } from "yup"
 
 export enum ExpenseType {
     EXPENSED,
@@ -19,3 +20,7 @@ export enum EmailType {
     PASSWORD,
     EMAIL
 }
+
+export interface EmailValidationParams {
+    token : string
+};

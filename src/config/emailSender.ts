@@ -1,32 +1,24 @@
 import { EmailType } from "@/types";
 import nodemailer from 'nodemailer';
 import User from "@/models/user.models";
-import bcrypt from 'bcrypt'
+import jwt from "jsonwebtoken"
 
+function generateVerificationCode(): string {
+    return Math.random().toString().substr(2, 6);
+}
 
 const sendEmail = async (emailType : 'emailType' | 'passwordType', email : string, userId : string) => {
 
     try {
-        // Generate a hash token
-        const salt = await bcrypt.genSalt(10);
-        const hashedToken = await bcrypt.hash(userId.toString(), salt);
-
-        console.log(userId);
-        const expiringTime = Date.now() + 360000;
+        // Generate  token
+        const token = await jwt.sign({ userId : userId }, process.env.JWT_EMAIL_KEY!, {expiresIn : "1d"});
         
-        // Update User
-        if (emailType === 'emailType') {
-            await User.findOneAndUpdate({email : email}, {
-                verifyToken : hashedToken,
-                verifyTokenExpiry : expiringTime
-            });
-        }
-        else if (emailType === 'passwordType') {
-            await User.findOneAndUpdate({email : email}, {
-                forgotPasswordToken : hashedToken,
-                forgotPasswordTokenExpiry : expiringTime
-            });
-        }
+        // if (emailType === 'passwordType') {
+        //     await User.findOneAndUpdate({email : email}, {
+        //         forgotPasswordToken : token,
+        //         forgotPasswordTokenExpiry : expiringTime
+        //     });
+        // }
 
         // SenEmail
 
@@ -39,13 +31,13 @@ const sendEmail = async (emailType : 'emailType' | 'passwordType', email : strin
         });
 
         const emailSubject = emailType === 'emailType' ? "VALIDATE YOUR EMAIL" : "RESET YOUR PASSWORD";
-        const link = emailType === 'emailType' ? `${process.env.DOMAIN}/verifyEmail/${hashedToken}` : `${process.env.DOMAIN}/verifyPassword/${hashedToken}`
+        const link = `${process.env.DOMAIN}/verifyEmail?token=${token}`
 
         const info = await transporter.sendMail({
             from : process.env.EMAIL as string,
             to : email,
             subject : emailSubject,
-            html : `<p> Click on this <a href="${link}"> Link <a/> <br/> Or copy this <br/> ${link} </p>`
+            html : `<p>Click On this Link to confirm : <a href="${link}">Ici</a> </p>`
         })
         return {message : 'Email is sent'}
     }

@@ -38,7 +38,7 @@ export async function POST(req : NextRequest) {
         }
 
         // generate token
-        const token = jwt.sign({id : user._id, time : Date.now()}, process.env.JWT_KEY!, {expiresIn : "24h"});
+        const token = jwt.sign({id : user._id, time : Date.now()}, process.env.JWT_KEY!, {expiresIn : "1d"});
         delete user.password;
 
         // create the response to send
