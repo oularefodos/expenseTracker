@@ -24,6 +24,10 @@ export async function POST(req : NextRequest) {
             );
         }
 
+        if (!user.isVerified) {
+            return NextResponse.redirect(new URL('/verify', req.url));
+        }
+
         // hash password
         const isValidePassword = await bcrypt.compare(password, user.password);
         if (!isValidePassword) {

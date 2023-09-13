@@ -14,3 +14,8 @@ export interface User {
     email : string,
     balance : number
 }
+
+export enum EmailType {
+    PASSWORD,
+    EMAIL
+}

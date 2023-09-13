@@ -1,5 +1,5 @@
 'use client'
-import WrapperCentered from '@/components/wrapperCentered'
+import WrapperCentered from '@/app/(front-end)/components/wrapperCentered'
 import { loginSchema } from '@/types/schema'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

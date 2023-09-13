@@ -1,4 +1,5 @@
 import connectDB from "@/config/db.config";
+import sendEmail from "@/config/emailSender";
 import User from "@/models/user.models";
 import { signupSchema } from "@/types/schema";
 import bcrypt from 'bcrypt'
@@ -25,9 +26,11 @@ export  async function  POST (req : NextRequest) {
         // create User 
         const newUser = new User({name, email, password : hashedPassword});
         await newUser.save();
+        await sendEmail('emailType', newUser.email, newUser._id);
         return NextResponse.json({message : "User created with success", success : true}, {status : 201});
     }
     catch (error : any) {
+        console.log(error)
         return NextResponse.json({error : error.message}, {status : 500});
     }
 }

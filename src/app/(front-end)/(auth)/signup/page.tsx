@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react'
-import WrapperCentered from '@/components/wrapperCentered'
+import WrapperCentered from '@/app/(front-end)/components/wrapperCentered'
 import Link from 'next/link'
 import { signupSchema } from '@/types/schema';
 import { useRouter } from 'next/navigation';
@@ -36,7 +36,7 @@ const Signup = () => {
         throw new Error(error.error.message)
       }
       const user = await response.json();
-      router.push('/profile');
+      router.push('/login');
       console.log(user);
     }
     catch (error : any) {
